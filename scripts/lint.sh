@@ -3,7 +3,7 @@ set -e
 
 # Local variables
 project_root="$(git rev-parse --show-toplevel)"
-ci_image="gitlab.lrz.de:5005/messtechnik-labor/barcs/docker/continuous-integration/x86_64-ubuntu22:latest"
+ci_image="$(cat "${project_root}/vars/docker_image_lint.txt")"
 
 # Functions
 ok() {
@@ -40,3 +40,4 @@ docker pull "$ci_image"
 docker_run "find . -name '*.sh' | xargs shellcheck"
 docker_run "black --quiet ."
 docker_run "find . -name '*[a-z].py' | xargs pylint -v"
+docker_run "yamllint .gitlab-ci.yml"
