@@ -11,9 +11,11 @@ minor_version=$(echo "${version}" | cut -d . -f 2)
 patch_version=$(echo "${version}" | cut -d . -f 3)
 
 # Only allow 1 argument
-if [[ "$#" -gt 1 ]]; then
-  echo -e "\e[31mToo many arguments\e[0m"
+if [[ ! "$#" -eq 1 ]]; then
+  echo -e "\e[31mNot exactly 1 argument!\e[0m"
   exit 0
+else
+  echo "Argument: $1"
 fi
 
 # Parse flags if major, minor or patch should be increased
@@ -24,14 +26,15 @@ while [[ "$#" -gt 0 ]]; do
       minor_version=0;
       patch_version=0;
       ;;
-    "--minor" ) 
+    "--minor" )
       minor_version=$((minor_version+1));
       patch_version=0;
       ;;
-    "--patch" ) 
+    "--patch" )
       patch_version=$((patch_version+1));
       ;;
   esac
+  shift
 done
 
 # If old version is equal to new version, exit
@@ -47,8 +50,11 @@ echo "${major_version}.${minor_version}.${patch_version}" > "${project_root}/var
 # Print that the version was increased
 echo "Increased version from ${version} to $(cat "${project_root}/vars/tag")"
 
-# Add the version file to git
+# Add the change of the version file to git
 git add "${project_root}/vars/tag"
 git commit --amend --no-edit
+
+# Push the changes and the new tag
 git push
-git push --no-verify origin "$(cat "$(git rev-parse --show-toplevel)"/vars/tag)"
+git tag "$(cat "$project_root"/vars/tag)"
+git push --no-verify origin "$(cat "$project_root"/vars/tag)"
