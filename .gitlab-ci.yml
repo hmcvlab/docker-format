@@ -68,6 +68,36 @@ test_project:
 ### Build ###
 #############
 
+.template_build:
+  rules:
+    - if: "$CI_COMMIT_TAG"
+  stage: build
+  needs: ["amd_test_project"]
+  script:
+    - python3 scripts/options.py --ros=${ROS} --context=verify
+    - docker build $(python3 scripts/options.py --ros=${ROS} --context=build) .
+    - docker push $(python3 scripts/options.py --ros=${ROS} --context=push)
+
+amd_build:
+  tags: [x86_64]
+  image: "${AMD_CI_IMAGE}"
+  extends: .template_build
+  parallel:
+    matrix:
+      - ROS: [humble, iron]
+
+arm_build:
+  tags: [aarch64]
+  image: "${ARM_CI_IMAGE}"
+  extends: .template_build
+  parallel:
+    matrix:
+      - ROS: [humble, iron]
+
+############
+### Test ###
+############
+
 .template_test:
   stage: test
   needs: ["test_project"]
@@ -76,15 +106,85 @@ test_project:
   script:
     - python3 -m pytest test/container/
 
+amd_humble_test:
+  extends: .amd_test
+  image: "${CI_REGISTRY_IMAGE}/tmp:amd-humble-${CI_COMMIT_TAG}"
+  needs:
+    - job: amd_build
+      parallel:
+        matrix:
+          - ROS: humble
+
+amd_iron_test:
+  extends: .amd_test
+  image: "${CI_REGISTRY_IMAGE}/tmp:amd-iron-${CI_COMMIT_TAG}"
+  needs:
+    - job: amd_build
+      parallel:
+        matrix:
+          - ROS: iron
+
+arm_humble_test:
+  extends: .arm_test
+  image: "${CI_REGISTRY_IMAGE}/tmp:arm-humble-${CI_COMMIT_TAG}"
+  needs:
+    - job: arm_build
+      parallel:
+        matrix:
+          - ROS: humble
+
+arm_iron_test:
+  extends: .arm_test
+  image: "${CI_REGISTRY_IMAGE}/tmp:arm-iron-${CI_COMMIT_TAG}"
+  needs:
+    - job: arm_build
+      parallel:
+        matrix:
+          - ROS: iron
+
 ############
-### Test ###
+### Push ###
 ############
 
 .template_push:
-  stage: push
   rules:
     - if: "$CI_COMMIT_TAG"
+  stage: push
   script:
-    - docker pull "${IMAGE_PULL}"
-    - docker tag "${IMAGE_PULL}" "${IMAGE_LATEST}"
-    - docker push "${IMAGE_LATEST}"
+    - tmp_image="${CI_REGISTRY_IMAGE}/tmp:${NAME}-${CI_COMMIT_TAG}"
+    - docker pull "$tmp_image"
+    - docker tag "$tmp_image" "${CI_REGISTRY_IMAGE}/${NAME}:${CI_COMMIT_TAG}"
+    - docker tag "$tmp_image" "${CI_REGISTRY_IMAGE}/${NAME}:latest"
+    - docker push --all-tags "${CI_REGISTRY_IMAGE}/${NAME}"
+
+amd_humble_push:
+  tags: [x86_64]
+  needs: ["amd_humble_test"]
+  image: "${AMD_CI_IMAGE}"
+  extends: .template_push
+  variables:
+    NAME: "amd-humble"
+
+amd_iron_push:
+  tags: [x86_64]
+  needs: ["amd_iron_test"]
+  image: "${AMD_CI_IMAGE}"
+  extends: .template_push
+  variables:
+    NAME: "amd-iron"
+
+arm_humble_push:
+  tags: [aarch64]
+  needs: ["arm_humble_test"]
+  image: "${ARM_CI_IMAGE}"
+  extends: .template_push
+  variables:
+    NAME: "arm-humble"
+
+arm_iron_push:
+  tags: [aarch64]
+  needs: ["arm_iron_test"]
+  image: "${ARM_CI_IMAGE}"
+  extends: .template_push
+  variables:
+    NAME: "arm-iron"

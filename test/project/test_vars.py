@@ -9,7 +9,7 @@ from git import Repo
 PROJECT_ROOT = Path(Repo(".", search_parent_directories=True).working_tree_dir)
 
 
-def test_tags():
+def test_tag():
     """Check if tag file eixsts and content has the following format: 0.0.0"""
     file = PROJECT_ROOT / "vars" / "tag"
     assert file.exists()
