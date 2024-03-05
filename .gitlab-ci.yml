@@ -7,8 +7,8 @@ stages:
 
 variables:
   CI_URL: "${CI_REGISTRY}/messtechnik-labor/barcs/docker/continuous-integration"
-  AMD_CI_IMAGE: "${CI_URL}/x86_64-ubuntu22:latest"
-  ARM_CI_IMAGE: "${CI_URL}/aarch64-r35:latest"
+  AMD_CI_IMAGE: "${CI_URL}/amd-22:latest"
+  ARM_CI_IMAGE: "${CI_URL}/arm-r35:latest"
   LABEL: "maintainer=messtechnik-labor"
 
 default:
@@ -52,7 +52,7 @@ lint_project:
   image: "${AMD_CI_IMAGE}"
   needs: []
   script:
-    - scripts/lint.sh
+    - python3 -m pytest -v test/project/
 
 test_project:
   stage: prepare
