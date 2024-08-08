@@ -6,8 +6,7 @@ stages:
   - push
 
 variables:
-  CI_URL: "${CI_REGISTRY}/messtechnik-labor/docker"
-  LINT_IMAGE: "${CI_URL}/lint:latest"
+  LINT_IMAGE: "${CI_REGISTRY}/messtechnik-labor/docker/lint:latest"
   LABEL: "maintainer=messtechnik-labor"
 
 default:
