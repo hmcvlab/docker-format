@@ -1,7 +1,0 @@
-id,image,ubuntu_version
-amd-humble,ros:humble-perception,22.04
-amd-rolling,ros:rolling-perception,22.04
-amd-iron,ros:iron-perception,22.04
-arm-foxy,dustynv/ros:foxy-desktop-l4t-r35.4.1,20.04
-arm-humble,dustynv/ros:humble-desktop-l4t-r35.4.1,20.04
-arm-iron,dustynv/ros:iron-desktop-l4t-r35.4.1,20.04
