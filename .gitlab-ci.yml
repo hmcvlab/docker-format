@@ -44,10 +44,11 @@ build:
     - if: "$CI_COMMIT_TAG"
   script:
     - |
-      docker buildx create tmp-multiarch \
+      docker buildx create  \
       --use \
       --bootstrap \
       --platform linux/amd64,linux/arm64/v8 \
+      tmp-multiarch
     - |
       docker buildx build \
       -t "${CI_REGISTRY_IMAGE}/tmp:${CI_COMMIT_TAG}" \
