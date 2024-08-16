@@ -25,13 +25,14 @@ default:
 # prepare
 
 lint:
-  image: ${LINT_IMAGE}
+  image: 
+    name: ${LINT_IMAGE}
+    entrypoint: [""]
   needs: []
   rules:
     - if: "$CI_COMMIT_TAG"
   stage: static-analysis
   script:
-    - ls -la
     - lint
 
 # build
@@ -43,10 +44,7 @@ build:
   rules:
     - if: "$CI_COMMIT_TAG"
   script:
-    - |
-      docker buildx create  \
-      --use \
-      --platform linux/amd64,linux/arm64/v8 \
+    - docker buildx create --use
     - |
       docker buildx build \
       -t "${CI_REGISTRY_IMAGE}/tmp:${CI_COMMIT_TAG}" \
