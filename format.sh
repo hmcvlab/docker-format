@@ -75,6 +75,7 @@ fi
 header "$n_python" "black"
 if [ "$n_python" -gt 0 ]; then
   black --quiet "$python_root"
+  ok
 else
   skip
 fi
@@ -84,9 +85,11 @@ header "$n_latex" "latex"
 if [ "$n_latex" -gt 0 ]; then
   find "$latex_root" -name "*.tex" -print0 | xargs -0 \
     latexindent -s -w -m -l /etc/configs/latexindent.yaml
+  ok
 else
   skip
 fi
+line
 
 # Change ownership
 chown -R ${UID}:${UID} "$project_root"
