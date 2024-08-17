@@ -24,4 +24,5 @@ COPY configs /etc
 # Entrypoint
 COPY format.sh /usr/local/bin/format
 RUN chmod +x /usr/local/bin/format
+WORKDIR /app
 ENTRYPOINT ["format"]
