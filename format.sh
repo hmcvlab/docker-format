@@ -87,3 +87,6 @@ if [ "$n_latex" -gt 0 ]; then
 else
   skip
 fi
+
+# Change ownership
+chown -R ${UID}:${UID} "$project_root"

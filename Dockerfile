@@ -8,6 +8,7 @@ RUN apt-get update -y && \
   black \
   clang-format \
   python3-pytest \
+  shfmt \
   wget \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
