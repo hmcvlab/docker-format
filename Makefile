@@ -1,9 +1,13 @@
+URL = gitlab.lrz.de:5005/messtechnik-labor/docker
 TAG = $(shell git tag --sort=committerdate | tail -1)
+
+lint:
+	docker run --rm -v "${PWD}":/app \
+		${URL}/lint:latest
 
 create-builder:
 	docker buildx rm tmp-builder
 	docker buildx create --use --name=tmp-builder --platform linux/arm64,linux/amd64
-
 
 build-dockerhub: create-builder
 	docker buildx build --push --platform linux/arm64,linux/amd64 \
@@ -15,8 +19,8 @@ build-dockerhub: create-builder
 build-gitlab: create-builder
 	docker buildx build --push --platform linux/arm64,linux/amd64 \
 		--provenance=false \
-		--tag gitlab.lrz.de:5005/messtechnik-labor/docker/format:latest \
-		--tag gitlab.lrz.de:5005/messtechnik-labor/docker/format:${TAG} \
+		--tag ${URL}/format:latest \
+		--tag ${URL}/format:${TAG} \
 		.
 	docker buildx rm tmp-builder
 
