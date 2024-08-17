@@ -1,6 +1,11 @@
 URL = gitlab.lrz.de:5005/messtechnik-labor/docker
 TAG = $(shell git tag --sort=committerdate | tail -1)
 
+format:
+	docker run --rm -v "${PWD}":/app \
+		-e UID="$(shell id -u)" \
+		${URL}/format:latest
+
 lint:
 	docker run --rm -v "${PWD}":/app \
 		${URL}/lint:latest
