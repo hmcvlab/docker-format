@@ -34,14 +34,14 @@ append_if_exists() {
   fi
 }
 
-script_root=$(append_if_exists "scripts")
+shell_root=$(append_if_exists "scripts")
 cpp_root=$(append_if_exists "src")
 python_root=$(append_if_exists "src")
 latex_root="$project_root"
 
 # Print project root
 line
-printf "Shell scripts root: %s\n" "$script_root"
+printf "Shell scripts root: %s\n" "$shell_root"
 printf "C++ code root: %s\n" "$cpp_root"
 printf "Python code root: %s\n" "$python_root"
 printf "Latex code root: %s\n" "$latex_root"
