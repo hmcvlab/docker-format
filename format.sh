@@ -56,7 +56,7 @@ n_latex="$(find "$latex_root" -name "*.tex" | wc -l)"
 # Format: shfmt
 header "$n_shell" "shfmt"
 if [ "$n_shell" -gt 0 ]; then
-  find "$shell_root" -name "*.sh" -print0 | xargs -0 shfmt -w -l -s -d
+  find "$shell_root" -name "*.sh" -print0 | xargs -0 shfmt -w -l -s -d -i 2
   ok
 else
   skip
