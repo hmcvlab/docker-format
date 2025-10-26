@@ -6,8 +6,8 @@ Build locally:
 make build
 ```
 
-Run locally:
+Format files using docker image:
 
 ```bash
-docker run gitlab.lrz.de:5005/messtechnik-labor/docker/<name>
+docker run -v "${PWD}":/app hmcvlab/format
 ```
