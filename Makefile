@@ -3,8 +3,7 @@ NAME = format
 TAG = $(shell git tag --sort=committerdate | tail -1)
 
 format:
-	docker run --rm -v "${PWD}":/app \
-		-e UID="$(shell id -u)" \
+	docker run --rm -v .:/app \
 		${URL}/format:latest
 
 lint:
