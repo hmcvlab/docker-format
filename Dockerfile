@@ -1,7 +1,8 @@
-FROM python:3.14-slim
+FROM ubuntu:24.04
 
 SHELL ["/bin/bash", "-c", "-o", "pipefail"]
 
+USER root
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
   perl \
@@ -12,6 +13,7 @@ RUN apt-get update -y && \
   wget \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
+USER ubuntu
 
 # Copy custom scripts into /usr/local/bin
 RUN wget --progress=dot:mega -O /usr/local/bin/latexindent \
