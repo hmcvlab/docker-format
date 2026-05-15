@@ -90,6 +90,3 @@ else
   skip
 fi
 line
-
-# Change ownership
-chown -R ${UID}:${UID} "$project_root"
